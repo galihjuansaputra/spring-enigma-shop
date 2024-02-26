@@ -1,12 +1,25 @@
 package com.enigma.enigma_shop.entity;
 
-import lombok.Data;
+import jakarta.persistence.*;
 
-@Data
+import lombok.*;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "m_product")
 public class Product {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+    @Column(name = "name", nullable = false)
     private String name;
-    private Long Price;
+    @Column(name = "price", nullable = false, columnDefinition = "BIGINT CHECK (price >= 0)")
+    private Long price;
+    @Column(name = "stock", nullable = false, columnDefinition = "INT CHECK (stock >= 0)")
+    private Integer stock;
 
 }
