@@ -32,7 +32,7 @@ public class Customer {
 
     @Column(name = "birth_date")
     @Temporal(TemporalType.DATE)
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+7")
     private Date birthDate;
 
     @Column(name = "status")

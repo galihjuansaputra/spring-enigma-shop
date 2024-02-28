@@ -1,15 +1,16 @@
 package com.enigma.enigma_shop.services;
 
+import com.enigma.enigma_shop.dto.request.SearchProductRequest;
 import com.enigma.enigma_shop.entity.Product;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface ProductService {
 
-
     Product create(Product product);
     Product getById(String id);
-    List<Product> getAll(String name, Long min, Long max, Integer stock);
+    Page<Product> getAll(SearchProductRequest request);
     Product update(Product product);
     void delete(String id);
 
