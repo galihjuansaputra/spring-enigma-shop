@@ -1,10 +1,15 @@
 package com.enigma.enigma_shop.controller;
 
+import com.enigma.enigma_shop.dto.request.NewProductRequest;
 import com.enigma.enigma_shop.dto.request.SearchProductRequest;
+import com.enigma.enigma_shop.dto.response.CommonResponse;
+import com.enigma.enigma_shop.dto.response.PagingResponse;
 import com.enigma.enigma_shop.entity.Product;
 import com.enigma.enigma_shop.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,17 +21,24 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
-    public Product createNewProduct(@RequestBody Product product) {
-        return productService.create(product);
+    public ResponseEntity<CommonResponse<Product>> createNewProduct(@RequestBody NewProductRequest request) {
+        Product product = productService.create(request);
+        CommonResponse<Product> response = CommonResponse.<Product>builder()
+                .statusCode(HttpStatus.CREATED.value())
+                .message("Succesfully Create New Product")
+                .data(product)
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping(path = "/{id}")
-    public Product getProductById(@PathVariable String id) {
-        return productService.getById(id);
+    public ResponseEntity<Product> getProductById(@PathVariable String id) {
+        Product product = productService.getById(id);
+        return ResponseEntity.ok(product);
     }
 
     @GetMapping
-    public Page<Product> getAllProduct(
+    public ResponseEntity<CommonResponse<List<Product>>> getAllProduct(
             @RequestParam(name = "page", defaultValue = "1") Integer page,
             @RequestParam(name = "size", defaultValue = "10") Integer size,
             @RequestParam(name = "sortBy", defaultValue = "name") String sortBy,
@@ -40,18 +52,38 @@ public class ProductController {
                 .direction(direction)
                 .name(name)
                 .build();
-        return productService.getAll(request);
+
+        Page<Product> products = productService.getAll(request);
+
+        PagingResponse pagingResponse = PagingResponse.builder()
+                .totalPages(products.getTotalPages())
+                .totalElement(products.getTotalElements())
+                .page(products.getPageable().getPageNumber() + 1)
+                .size(products.getPageable().getPageSize())
+                .hasNext(products.hasNext())
+                .hasPrevious(products.hasPrevious())
+                .build();
+
+        CommonResponse<List<Product>> response = CommonResponse.<List<Product>>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Success Get All Product")
+                .data(products.getContent())
+                .paging(pagingResponse)
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping
-    public Product updateProduct(@RequestBody Product product) {
-        return productService.update(product);
+    public ResponseEntity<Product> updateProduct(@RequestBody Product payload) {
+        Product product = productService.update(payload);
+        return ResponseEntity.ok(product);
     }
 
     @DeleteMapping("/{id}")
-    public String deleteById(@PathVariable String id) {
+    public ResponseEntity<String> deleteById(@PathVariable String id) {
         productService.delete(id);
-        return "OK";
+        return ResponseEntity.ok("OK");
     }
 
 }

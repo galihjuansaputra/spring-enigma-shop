@@ -5,6 +5,8 @@ import com.enigma.enigma_shop.dto.response.TransactionResponse;
 import com.enigma.enigma_shop.entity.Transaction;
 import com.enigma.enigma_shop.services.TransactionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,15 +15,18 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(path = "/api/transactions")
 public class TransactionController {
+
     private final TransactionService transactionService;
     @PostMapping
-    public TransactionResponse createNewTransaction(@RequestBody TransactionRequest request){
+    public ResponseEntity<TransactionResponse> createNewTransaction(@RequestBody TransactionRequest request){
         // logic service
-        return transactionService.create(request);
+        TransactionResponse transactionResponse = transactionService.create(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(transactionResponse);
     }
     @GetMapping
-    public List<TransactionResponse> getAllTransaction() {
-        return transactionService.getAll();
+    public ResponseEntity<List<TransactionResponse>> getAllTransaction() {
+        List<TransactionResponse> all = transactionService.getAll();
+        return ResponseEntity.ok(all);
     }
 
 }
