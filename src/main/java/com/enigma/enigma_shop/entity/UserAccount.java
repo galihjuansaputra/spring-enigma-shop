@@ -14,7 +14,9 @@ import java.util.List;
 @ToString
 @RequiredArgsConstructor
 @Entity
+@Builder
 @Table(name = "m_user_account")
+@AllArgsConstructor
 public class UserAccount implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

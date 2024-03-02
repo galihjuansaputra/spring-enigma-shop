@@ -11,9 +11,9 @@ import java.util.List;
 public class ProductSpecification {
 
     public static Specification<Product> getSpecification(SearchProductRequest request){
+
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-
             if (request.getName() != null) {
                 predicates.add(
                         criteriaBuilder.like(

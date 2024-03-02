@@ -18,14 +18,14 @@ import java.util.List;
 public class CustomerController {
     private final CustomerService customerService;
 
-    @PostMapping
+/*    @PostMapping
     public ResponseEntity<Customer> createNewCustomer(@RequestBody Customer payload) {
 
         Customer customer = customerService.create(payload);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(customer);
-    }
+    }*/
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<Customer> getCustomerById(@PathVariable String id) {
