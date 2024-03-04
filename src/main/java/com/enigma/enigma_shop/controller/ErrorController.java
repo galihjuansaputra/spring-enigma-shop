@@ -5,6 +5,8 @@ import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
@@ -52,5 +54,23 @@ public class ErrorController {
         }
 
         return ResponseEntity.status(httpStatus).body(builder.build());
+    }
+
+    @ExceptionHandler({AccessDeniedException.class})
+    public ResponseEntity<CommonResponse<?>> accessDeniedExceptionHandler(AccessDeniedException e){
+        CommonResponse<?> response= CommonResponse.builder()
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .message(e.getMessage())
+                .build();
+        return  ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+
+    @ExceptionHandler({AuthenticationException.class})
+    public ResponseEntity<CommonResponse<?>> authenticationExceptionHandler(AuthenticationException e){
+        CommonResponse<?> response= CommonResponse.builder()
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .message(e.getMessage())
+                .build();
+        return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 }

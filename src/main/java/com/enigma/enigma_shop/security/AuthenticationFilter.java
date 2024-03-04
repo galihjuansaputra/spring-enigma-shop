@@ -40,7 +40,6 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                 // mengambil userAccount berdasarkan Id?
 
                 UserAccount userAccount = userService.getByUserId(jwtClaims.getUserAccountId());
-
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userAccount.getUsername(),
                         null,

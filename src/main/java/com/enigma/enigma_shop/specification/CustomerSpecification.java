@@ -43,7 +43,7 @@ public class CustomerSpecification {
                 predicates.add(statusPredicate);
             }
 
-            return cq.where(cb.or(predicates.toArray(new Predicate[]{}))).getRestriction();
+            return cq.where(cb.and(predicates.toArray(new Predicate[]{}))).getRestriction();
 
 
         };

@@ -1,12 +1,13 @@
 package com.enigma.enigma_shop.controller;
 
 import com.enigma.enigma_shop.dto.request.SearchCustomerRequest;
+import com.enigma.enigma_shop.dto.request.UpdateCustomerRequest;
+import com.enigma.enigma_shop.dto.response.CustomerResponse;
 import com.enigma.enigma_shop.entity.Customer;
-import com.enigma.enigma_shop.repository.CustomerRepository;
 import com.enigma.enigma_shop.services.CustomerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -33,8 +34,9 @@ public class CustomerController {
         return ResponseEntity.ok(customer);
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @GetMapping
-    public ResponseEntity<List<Customer>> getAllCustomer(
+    public ResponseEntity<List<CustomerResponse>> getAllCustomer(
             @RequestParam(name = "name", required = false) String name,
             @RequestParam(name = "mobilePhoneNo", required = false) String mobilePhoneNo,
             @RequestParam(name = "birthDate", required = false) Date birthDate,
@@ -49,16 +51,18 @@ public class CustomerController {
                 .mobilePhoneNo(mobilePhoneNo)
                 .birthDate(birthDate)
                 .status(status)
+                .pageNo(pageNo)
+                .pageSize(pageSize)
                 .build();
 
-        List<Customer> customer = customerService.getAll(request, pageNo, pageSize);
+        List<CustomerResponse> customer = customerService.getAll(request);
 
         return ResponseEntity.ok(customer);
     }
 
     @PutMapping
-    public ResponseEntity<Customer> updateCustomer(@RequestBody Customer payload) {
-        Customer customer = customerService.update(payload);
+    public ResponseEntity<CustomerResponse> updateCustomer(@RequestBody UpdateCustomerRequest payload) {
+        CustomerResponse customer = customerService.update(payload);
         return ResponseEntity.ok(customer);
     }
 

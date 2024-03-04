@@ -69,14 +69,13 @@ public class TransactionServiceImpl implements TransactionService {
         transactionDetailService.createBulk(trxDetails);
         trx.setTransactionDetails(trxDetails);
 
-        List<TransactionDetailResponse> trxDetailResponses = trxDetails.stream().map(detail -> {
-            return TransactionDetailResponse.builder()
+        List<TransactionDetailResponse> trxDetailResponses = trxDetails.stream().map(detail ->
+                TransactionDetailResponse.builder()
                     .id(detail.getId())
                     .productId(detail.getProduct().getId())
                     .productPrice(detail.getProductPrice())
                     .quantity(detail.getQty())
-                    .build();
-        }).toList();
+                    .build()).toList();
 
         return TransactionResponse.builder()
                 .id(trx.getId())
@@ -86,6 +85,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<TransactionResponse> getAll() {
         List<Transaction> transactions = transactionRepository.findAll();

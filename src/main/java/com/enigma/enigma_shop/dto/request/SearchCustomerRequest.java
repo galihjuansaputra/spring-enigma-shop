@@ -14,4 +14,7 @@ public class SearchCustomerRequest {
     private String mobilePhoneNo;
     private Date birthDate;
     private Boolean status;
+    private Integer pageNo;
+    private Integer pageSize;
+
 }

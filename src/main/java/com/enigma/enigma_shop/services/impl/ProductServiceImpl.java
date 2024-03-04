@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -26,8 +27,10 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ValidationUtil validationUtil;
+
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public Product create(NewProductRequest request){
+    public Product create(NewProductRequest request) {
         validationUtil.validate(request);
         Product product = Product.builder()
                 .name(request.getName())
@@ -37,6 +40,7 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.saveAndFlush(product);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Product getById(String id) {
         Optional<Product> optionalProduct = productRepository.findById(id);
@@ -44,12 +48,13 @@ public class ProductServiceImpl implements ProductService {
         return optionalProduct.get();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<Product> getAll(SearchProductRequest request) {
         if (request.getPage() <= 0) request.setPage(1);
         Sort sort = Sort.by(Sort.Direction.fromString(request.getDirection()), request.getSortBy());
 
-        Pageable pageable = PageRequest.of((request.getPage() -1), request.getSize(), sort);
+        Pageable pageable = PageRequest.of((request.getPage() - 1), request.getSize(), sort);
         Specification<Product> specification = ProductSpecification.getSpecification(request);
         return productRepository.findAll(specification, pageable);
 
@@ -64,6 +69,7 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Product update(Product product) {
         getById(product.getId());
@@ -71,6 +77,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void delete(String id) {
         Product currentProduct = getById(id);
