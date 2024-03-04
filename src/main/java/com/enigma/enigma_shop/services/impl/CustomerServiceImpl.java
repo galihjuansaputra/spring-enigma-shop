@@ -76,22 +76,17 @@ public class CustomerServiceImpl implements CustomerService {
 
         List<String> roles = userAccount.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 
-        if (!userAccount.getId().equals(currentCustomer.getUserAccount().getId())) {
-            throw new AccessDeniedException("cannot access this resource");
+        if (userAccount.getId().equals(currentCustomer.getUserAccount().getId()) || roles.contains(UserRole.ROLE_SUPER_ADMIN.name()) || roles.contains(UserRole.ROLE_ADMIN.name())) {
+
+            currentCustomer.setName(request.getName());
+            currentCustomer.setMobilePhoneNo(request.getMobilePhoneNo());
+            currentCustomer.setAddress(request.getAddress());
+            currentCustomer.setBirthDate(Date.valueOf(request.getBirthDate()));
+        } else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "cannot access this resource");
         }
 
-        if (roles.contains(UserRole.ROLE_SUPER_ADMIN.name())){
-            throw new AccessDeniedException("cannot access this resource");
-        }
 
-        if (roles.contains(UserRole.ROLE_ADMIN.name())){
-            throw new AccessDeniedException("cannot access this resource");
-        }
-
-        currentCustomer.setName(request.getName());
-        currentCustomer.setMobilePhoneNo(request.getMobilePhoneNo());
-        currentCustomer.setAddress(request.getAddress());
-        currentCustomer.setBirthDate(Date.valueOf(request.getBirthDate()));
         customerRepository.saveAndFlush(currentCustomer);
         return convertCustomerToCustomerResponse(currentCustomer);
     }
