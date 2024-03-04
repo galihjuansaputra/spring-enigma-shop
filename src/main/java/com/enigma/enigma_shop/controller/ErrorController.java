@@ -19,9 +19,7 @@ public class ErrorController {
                 .message(exception.getReason())
                 .build();
 
-        return ResponseEntity
-                .status(exception.getStatusCode())
-                .body(response);
+        return ResponseEntity.status(exception.getStatusCode()).body(response);
     }
 
     @ExceptionHandler({ConstraintViolationException.class})

@@ -21,32 +21,33 @@ import java.awt.*;
 @RequestMapping(path = "/api/auth")
 public class AuthController {
     private final AuthService authService;
-        @PostMapping(path = "/register",
-                consumes = MediaType.APPLICATION_JSON_VALUE,
-                produces = MediaType.APPLICATION_JSON_VALUE
-        )
-        public ResponseEntity<CommonResponse<?>> registerUser(@RequestBody AuthRequest request){
-            RegisterResponse register = authService.register(request);
-            CommonResponse<RegisterResponse> response = CommonResponse.<RegisterResponse>builder()
-                    .statusCode(HttpStatus.CREATED.value())
-                    .message("Successfully create new account")
-                    .data(register)
-                    .build();
-            return ResponseEntity.status((HttpStatus.CREATED)).body(response);
-        }
 
-        @PostMapping(path = "/login",
-                consumes = MediaType.APPLICATION_JSON_VALUE,
-                produces = MediaType.APPLICATION_JSON_VALUE
-        )
-    public ResponseEntity<CommonResponse<?>> login (@RequestBody AuthRequest request) {
-            LoginResponse loginResponse = authService.login(request);
-            CommonResponse<LoginResponse> response = CommonResponse.<LoginResponse>builder()
-                    .statusCode(HttpStatus.OK.value())
-                    .message("login successfully")
-                    .data(loginResponse)
-                    .build();
-            return ResponseEntity.ok(response);
-        }
+    @PostMapping(path = "/register",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<CommonResponse<?>> registerUser(@RequestBody AuthRequest request) {
+        RegisterResponse register = authService.register(request);
+        CommonResponse<RegisterResponse> response = CommonResponse.<RegisterResponse>builder()
+                .statusCode(HttpStatus.CREATED.value())
+                .message("Successfully create new account")
+                .data(register)
+                .build();
+        return ResponseEntity.status((HttpStatus.CREATED)).body(response);
+    }
+
+    @PostMapping(path = "/login",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<CommonResponse<?>> login(@RequestBody AuthRequest request) {
+        LoginResponse loginResponse = authService.login(request);
+        CommonResponse<LoginResponse> response = CommonResponse.<LoginResponse>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("login successfully")
+                .data(loginResponse)
+                .build();
+        return ResponseEntity.ok(response);
+    }
 
 }
